@@ -2,6 +2,7 @@
 Bash script to create a host file and SSL certificate using Certbot
 
 Save file in /usr/local/bin
+chmod 700 filename so everyone can use
 Must be run with sudo
 
 **IMPORTANT**
