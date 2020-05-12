@@ -21,4 +21,4 @@ If there are no files it will create a new one in /etc/apache2/sites-enabled/ (c
 - Add a monitor to letsmonitor.org via API
 - Option to add monitor to Uptimerobot via API
 - Rsync to other servers (via prompt)
-
+- Verify if certbot is installed. Possibly install
