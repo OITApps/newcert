@@ -8,12 +8,10 @@ Download file to /usr/local/bin
 chmod 700 filename so everyone can use
 Must be run with sudo
 
-**IMPORTANT**
-Replace the account ID in the top block. You can find your account ID from the below link
-https://letsencrypt.org/docs/account-id/
+# Usage
+`sudo newcert.sh`
 
-Run the file and it will ask you for the new FQDN
-It will check for the existance of any vhost files matching that name. If it finds one it will exit.
+It will ask you for the new FQDN and check for the existance of any vhost files matching that name. If it finds one it will exit.
 If there are no files it will create a new one in /etc/apache2/sites-enabled/ (configurable) and begin the certification process with certbot
 
 **Future upgrades**
