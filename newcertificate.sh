@@ -3,6 +3,7 @@
 clear
 
 # Set variables
+account="e87af8285ab91c6d30ae453731febebc"
 certpath="/etc/apache2/sites-enabled/"
 
 
@@ -35,7 +36,7 @@ then
         fi
 
         # Create configuration file
-        sudo printf "<VirtualHost *:443>\nServerName $fqdn:443\nServerAlias $fqdn\nDocumentRoot /var/www/html/\n</VirtualHost>" >  $certpath$filename
+        sudo printf "<VirtualHost *:443>\nServerName $fqdn:443\nServerAlias $fqdn\nDocumentRoot /var/www/html/\n</VirtualHost>" > $c$
 
         # Verify new file was created
         if test  -f $certpath$filename
@@ -43,14 +44,22 @@ then
                 printf  "\nNew configuration file created successfully. Beginning certification process...\n"
                 # Run Let's Encrypt with the new file
                 printf "\nRunning certbot for $fqdn....\n"
-                sudo certbot --apache --no-redirect -d $fqdn
+                sudo certbot --apache --no-redirect --account $account -d $fqdn
 
                 printf "\nCertbot process complete. Please navigate to $fqdn to verify functionality.\n"
         else
                 printf "\nUnable to create configuration file. Contact administrator. Exiting application.\n"
                 exit 1
         fi
+
+        # Restart Apache
+        printf "\nRestarting Apache service...\n"
+        sudo service apache2 restart
 else
         printf "\nYou have not confirmed. Now exiting....\n"
         exit 1
 fi
+
+#TODO Function to create UTR or LE monitor
+#TODO Report status
+#TODO run rsync to other services
