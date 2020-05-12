@@ -4,9 +4,10 @@ Bash script to create a host file and SSL certificate using Certbot
 # Prerequisites
 Need to have certbot installed. For Ubunutu you can follow this guide - https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-16-04
 
-Download file to /usr/local/bin
-chmod 700 filename so everyone can use
-Must be run with sudo
+# Installation
+1. Create the new file `sudo touch /usr/local/bin/newcert.sh`
+2. Copy the contents of newcertificate.sh to newcert.sh `sudo nano newcert.sh` 
+3. Change permissions so anyone can use `sudo chmod 700 /usr/local/bin/newcert.sh`
 
 # Usage
 `sudo newcert.sh`
