@@ -36,7 +36,7 @@ then
         fi
 
         # Create configuration file
-        sudo printf "<VirtualHost *:443>\nServerName $fqdn:443\nServerAlias $fqdn\nDocumentRoot /var/www/html/\n</VirtualHost>" > $c$
+        sudo printf "<VirtualHost *:443>\nServerName $fqdn:443\nServerAlias $fqdn\nDocumentRoot /var/www/html/\n</VirtualHost>" > $certpath$filename
 
         # Verify new file was created
         if test  -f $certpath$filename
