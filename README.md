@@ -21,7 +21,7 @@ If there are no files it will create a new one in /etc/apache2/sites-enabled/ (c
 - Added logging for PIDs
 - Will now check if certbot account is installed or exists and will use the account automatically 
 
-**Future upgrades**
+# Future upgrades 
 - Modify the script to check for the contents of all vhost files instead of just the file name
 - Check that Apache is responding with the new SSL certificate
 - Add a monitor to letsmonitor.org via API
