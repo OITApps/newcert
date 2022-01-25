@@ -53,8 +53,8 @@ then
         fi
 
         # Restart Apache
-        printf "\nRestarting Apache service...\n"
-        sudo service apache2 restart
+        printf "\nReloading Apache configuration...\n"
+        sudo service apache2 reload
 else
         printf "\nYou have not confirmed. Now exiting....\n"
         exit 1
