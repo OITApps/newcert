@@ -44,7 +44,7 @@ then
                 printf  "\nNew configuration file created successfully. Beginning certification process...\n"
                 # Run Let's Encrypt with the new file
                 printf "\nRunning certbot for $fqdn....\n"
-                sudo certbot --apache --no-redirect --account $account -d $fqdn
+                sudo certbot --webroot -w /var/www/html --no-redirect --account $account -d $fqdn
 
                 printf "\nCertbot process complete. Please navigate to $fqdn to verify functionality.\n"
         else
