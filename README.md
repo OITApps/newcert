@@ -1,4 +1,4 @@
-# createlecertificate
+# create le-certificate
 Bash script to create a host file and SSL certificate using Certbot
 
 # Prerequisites
