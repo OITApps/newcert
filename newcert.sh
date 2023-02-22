@@ -63,6 +63,8 @@ then
         # Update Feb 22, 2023 - disabled reload of apache to prevent interruption of service. 
         printf "\nApache configuration will reload automatically at 4:00a EST nightly...\n"
         #sudo service apache2 reload
+        printf "\nPeforming Apache Config Test..."
+        sudo apachectl configtest
 else
         printf "\nYou have not confirmed. Now exiting....\n"
         exit 1
