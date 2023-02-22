@@ -38,14 +38,14 @@ then
 
         # Create configuration file
         sudo cat <<- EOF > $certpath$filename
-                        <VirtualHost *:443>
-                        ServerName $fqdn:443
-                        ServerAlias $fqdn
-                        DocumentRoot /var/www/html/
-                        SSLCertificateFile /etc/letsencrypt/live/$fqdn/fullchain.pem
-                        SSLCertificateKeyFile /etc/letsencrypt/live/$fqdn/privkey.pem
-                        Include /etc/letsencrypt/options-ssl-apache.conf
-                        </VirtualHost>
+                <VirtualHost *:443>
+                ServerName $fqdn:443
+                ServerAlias $fqdn
+                DocumentRoot /var/www/html/
+                SSLCertificateFile /etc/letsencrypt/live/$fqdn/fullchain.pem
+                SSLCertificateKeyFile /etc/letsencrypt/live/$fqdn/privkey.pem
+                Include /etc/letsencrypt/options-ssl-apache.conf
+                </VirtualHost>
                 EOF
 
         # Verify new file was created
