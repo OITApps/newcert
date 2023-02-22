@@ -36,7 +36,14 @@ then
         fi
 
         # Create configuration file
-        sudo printf "<VirtualHost *:443>\nServerName $fqdn:443\nServerAlias $fqdn\nDocumentRoot /var/www/html/\n</VirtualHost>" > $certpath$filename
+        sudo printf "<VirtualHost *:443>\n
+                        ServerName $fqdn:443\n
+                        ServerAlias $fqdn\n
+                        DocumentRoot /var/www/html/\n
+                        SSLCertificateFile /etc/letsencrypt/live/$fqdn/fullchain.pem\n
+                        SSLCertificateKeyFile /etc/letsencrypt/live/$fqdn/privkey.pem\n
+                        Include /etc/letsencrypt/options-ssl-apache.conf\n
+                        </VirtualHost>" > $certpath$filename
 
         # Verify new file was created
         if test  -f $certpath$filename
@@ -53,8 +60,9 @@ then
         fi
 
         # Restart Apache
-        printf "\nReloading Apache configuration...\n"
-        sudo service apache2 reload
+        # Update Feb 22, 2023 - disabled reload of apache to prevent interruption of service. 
+        printf "\nApache configuration will reload automatically at 4:00a EST nightly...\n"
+        #sudo service apache2 reload
 else
         printf "\nYou have not confirmed. Now exiting....\n"
         exit 1
