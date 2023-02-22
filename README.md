@@ -8,6 +8,7 @@ Need to have certbot installed. For Ubunutu you can follow this guide - https://
 1. Create the new file `sudo touch /usr/local/bin/newcert.sh`
 2. Copy the contents of newcertificate.sh to newcert.sh `sudo nano newcert.sh` 
 3. Change permissions so anyone can use `sudo chmod 700 /usr/local/bin/newcert.sh`
+4. Update the line for Account ID, replaceing <certbot account ID> with your account ID. *Account ID can be found here - /etc/letsencrypt/accounts/
 
 # Usage
 `sudo newcert.sh`
