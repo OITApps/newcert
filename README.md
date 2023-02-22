@@ -15,6 +15,10 @@ Need to have certbot installed. For Ubunutu you can follow this guide - https://
 It will ask you for the new FQDN and check for the existance of any vhost files matching that name. If it finds one it will exit.
 If there are no files it will create a new one in /etc/apache2/sites-enabled/ (configurable) and begin the certification process with certbot
 
+Due to using the certbot webroot plugin, apache will need to be manually restarted in order to load the new SSL certificate. 
+
+Once the script runs, it will prompt with a "Syntax OK", this will confirm that apache is able to be reloaded without issue, if there is any errors, correct those errors and manually run "sudo apachectl configtest" to confirm apache is able to be reloaded. 
+
 **Future upgrades**
 - Modify the script to check for the contents of all vhost files instead of just the file name
 - Check that Apache is responding with the new SSL certificate
