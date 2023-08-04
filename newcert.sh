@@ -7,22 +7,21 @@ clear
 account="<certbot account ID>"
 certpath="/etc/apache2/sites-enabled/"
 
-#sync variables
-#set locations of files to be synced
-local_ssl="/etc/ssl" # local SSL files
-local_sites="/etc/apache2/sites-enabled" # Apache Site
-local_LE="/etc/letsencrypt" # local SSL files
+#set log file location
+log_file="/var/log/oitscript/newcert.log"
 
-#set remote server FQDN's.
-#urls must be space separated and enclosed in quotes. replace <server 1> and <server 2> with the respective servers IP or FQDN
+#set remote server FQDN's. replace <FQDN> with the server FQDN or IP
+#urls must be space separated and enclosed in quotes
 #no URL's will disable syncing to that cluster
-fac_servers=("<server 1>" "<server 2>")
-hosted_servers=()
+fac_servers=("<FQDN>")
+hosted_servers=("<FQDN>" "<FQDN>")
 
-#set syncuser name to be used for rsync authentication. Replace <rsync user> with the user to be used for authenticating the rsync 
-sync_user="<rsync user>"
+#set syncuser name to be used for rsync authentication. 
+sync_user="certsync"
+fac_sync_user="root"
 
 priv_key_loc="/home/$sync_user/.ssh/id_rsa"
+fac_priv_key_loc="/$fac_sync_user/.ssh/id_rsa"
 
 printf "Let's get started registering a new cert.\n"
 read -p "Please enter the FQDN of the new cert: " fqdn
@@ -58,12 +57,12 @@ then
                 ServerName $fqdn:443
                 ServerAlias $fqdn
                 DocumentRoot /var/www/html/
-		AllowEncodedSlashes On
+                AllowEncodedSlashes On
                 SSLCertificateFile /etc/letsencrypt/live/$fqdn/fullchain.pem
                 SSLCertificateKeyFile /etc/letsencrypt/live/$fqdn/privkey.pem
                 Include /etc/letsencrypt/options-ssl-apache.conf
                 </VirtualHost>
-                EOF
+EOF
 
         # Verify new file was created
         if test  -f $certpath$filename
@@ -80,22 +79,22 @@ then
         fi
 
         #change file permissions to allow for rsyncing
-        sudo chmod -R 0650 /etc/letsencrypt/keys/
-        sudo chmod -R 0650 /etc/letsencrypt/archive/$fqdn/privkey*  
+        sudo chmod -R 0655 /etc/letsencrypt/keys/
+        sudo chmod -R 0655 /etc/letsencrypt/archive/*/privkey* 
 
         #rsync new SSL certificate to FAC core servers
         echo "Syncing FAC Servers"
         if [ ${#fac_servers[@]} -ne 0 ]; then
             for fac_server in "${fac_servers[@]}"
             do
-                echo "Syncing files to $fac_server"
-                sudo -u $sync_user rsync -ate "ssh -i $priv_key_loc" ${local_ssl} ${sync_user}@${fac_server}:/etc/ssl/
-		sudo -u $sync_user rsync -ate "ssh -i $priv_key_loc" ${local_sites} ${sync_user}@${fac_server}:/etc/apache2/sites-enabled
-                sudo -u $sync_user rsync -ate "ssh -i $priv_key_loc" ${local_LE} ${sync_user}@${fac_server}:/etc/letsencrypt
-                echo "Sync to $fac_server complete"
+                echo $(date) - "Syncing files to $fac_server" | tee -a $log_file
+                sudo -u $fac_sync_user rsync -ate "ssh -i $fac_priv_key_loc" ${local_ssl}/ ${fac_sync_user}@${fac_server}:/etc/ssl/ >> /var/log/certsync.log 2>&1 
+                sudo -u $fac_sync_user rsync -ate "ssh -i $fac_priv_key_loc" ${local_sites}/ ${fac_sync_user}@${fac_server}:/etc/apache2/sites-enabled >> $log_file 2>&1
+                sudo -u $fac_sync_user rsync -ate "ssh -i $fac_priv_key_loc" ${local_LE}/ ${fac_sync_user}@${fac_server}:/etc/letsencrypt >> $log_file 2>&1
+                echo $(date) - "Sync to $fac_server complete" | tee -a $log_file
             done
         else
-            echo "No FAC core servers to sync with."
+            echo $(date) - "No FAC core servers to sync with." | tee -a $log_file
         fi
 
         #rsync new SSL certificate to hosted core servers
@@ -103,14 +102,14 @@ then
         if [ ${#hosted_servers[@]} -ne 0 ]; then
             for hosted_server in "${hosted_servers[@]}"
             do
-                echo "Syncing files to $hosted_server"
-                sudo -u $sync_user rsync -ate "ssh -i $priv_key_loc" ${local_ssl} ${sync_user}@${hosted_server}:/home/${sync_user}/
-                sudo -u $sync_user rsync -ate "ssh -i $priv_key_loc" ${local_sites} ${sync_user}@${hosted_server}:/home/${sync_user}
-                sudo -u $sync_user rsync -ate "ssh -i $priv_key_loc" ${local_LE} ${sync_user}@${hosted_server}:/home/${sync_user}
-                echo "Sync to $hosted_server complete"
+                echo $(date) - "Syncing files to $hosted_server" | tee -a $log_file
+                sudo -u $sync_user rsync -ate "ssh -i $priv_key_loc" ${local_ssl} ${sync_user}@${hosted_server}:/home/${sync_user}/ >> $log_file 2>&1
+                sudo -u $sync_user rsync -ate "ssh -i $priv_key_loc" ${local_sites} ${sync_user}@${hosted_server}:/home/${sync_user} >> $log_file 2>&1
+                sudo -u $sync_user rsync -ate "ssh -i $priv_key_loc" ${local_LE} ${sync_user}@${hosted_server}:/home/${sync_user} >> $log_file 2>&1
+                echo $(date) - "Sync to $hosted_server complete" | tee -a $log_file
             done
         else
-            echo "No hosted core servers to sync with."
+            echo $(date) - "No hosted core servers to sync with." | tee -a $log_file
         fi
 
         # Restart Apache
